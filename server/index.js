@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 
 const Question = require("./models/Question");
 
+const PushNotifications = require("./models/PushNotifications");
 /*
  * Express Bootstrap
  */
@@ -60,18 +61,14 @@ app.get("/questions/asked", (req, res) => {
 
 app.post("/push/add-token", (req, res) => {
   const data = {
-    pushToken: req.body.pushToken,
+    token: req.body.token,
     platform: req.body.platform,
     timezoneOffset: req.body.timezoneOffset
   };
-  console.log("data", data);
-  formatResponse(res, "success");
 
-  return Promise.reject(new Error("this is test"))
+  return PushNotifications.addPushToken(data)
     .then(() => formatResponse(res, "success"))
-    .catch(() => {
-      formatResponse(res, "error", error);
-    });
+    .catch(error => formatResponse(res, "error", error));
 });
 /*
  * Start Server
