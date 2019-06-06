@@ -17,7 +17,7 @@ exports.up = function(knex, Promise) {
       table.increments("_id");
       table.text("token");
       table.string("platform");
-      table.integer("timezoneOffset");
+      table.integer("timezoneOffset").defaultTo(240); // Default to EST
     })
   );
 

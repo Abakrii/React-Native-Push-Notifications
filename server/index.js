@@ -2,8 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const Question = require("./models/Question");
+const PushNotification = require("./models/PushNotification");
 
-const PushNotifications = require("./models/PushNotifications");
 /*
  * Express Bootstrap
  */
@@ -26,6 +26,22 @@ const formatResponse = require("./helpers/formatResponse");
 
 app.get("/", (req, res) => {
   res.send("Hello to the Trivia API!");
+});
+
+app.post("/push/add-token", (req, res) => {
+  const data = {
+    token: req.body.pushToken,
+    platform: req.body.platform,
+    timezoneOffset: req.body.timezoneOffset
+  };
+
+  return PushNotification.addPushToken({
+    token: req.body.pushToken,
+    platform: req.body.platform,
+    timezoneOffset: req.body.timezoneOffset
+  })
+    .then(() => formatResponse(res, "success"))
+    .catch(error => formatResponse(res, "error", error));
 });
 
 app.get("/questions/next", (req, res) => {
@@ -59,17 +75,6 @@ app.get("/questions/asked", (req, res) => {
     .catch(error => formatResponse(res, "error", error));
 });
 
-app.post("/push/add-token", (req, res) => {
-  const data = {
-    token: req.body.token,
-    platform: req.body.platform,
-    timezoneOffset: req.body.timezoneOffset
-  };
-
-  return PushNotifications.addPushToken(data)
-    .then(() => formatResponse(res, "success"))
-    .catch(error => formatResponse(res, "error", error));
-});
 /*
  * Start Server
  */
